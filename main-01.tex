@@ -1,0 +1,43 @@
+\documentclass{article}
+
+\usepackage[english]{babel}
+
+% Set page size and margins
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{\LARGE{\textbf{Algorithm Design 21/22}}\\ \vspace{1cm} Hands On 1 - Universal Hash Family}
+\author{Federico Ramacciotti}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Problem}
+Prove that the family $\mathcal{H}$ of functions is universal, given $m>1$ and $p\in[m+1,2m)$ prime, $\mathcal{H}=\{h_{ab}=((ax+b)\mod p)\mod m, a\in[1,p-1], b\in[0,p-1]\}$ that is, for any $k_1\neq k_2$, it holds that $|\{ h\in H\ s.t.\ h(k_1)=h(k_2)\}|=\frac{|\mathcal{H}|}{m}$.\\
+Hint: consider $r = (a k_1 + b)\mod p$ and $s = (a k_2 + b)\mod p$ where $k_1, k_2 \in[0,p-1]$.
+
+\section{Solution}
+Consider $k_1$, $k_2$ distinct keys in $[0,p-1]$. Given an hash function $h\in \mathcal{H}$, define $$r=(ak_1+b)\mod p$$ $$s=(ak_2+b)\mod p$$
+We can see that $r-s \equiv a(k_1-k_2)\mod p$ and therefore, since $p$ is prime and $k_1\neq k_2$, we get that $r\neq s$. This implies that, computing any hash function $h\in \mathcal{H}$, distinct inputs $k_1,k_2$ give distinct values of $r$ and $s$ modulo $p$. Moreover, any $p(p-1)$ choice for the pair $(a,b)$ generates a distinct pair $(r,s)$ with $r\neq s$.
+
+To show this, derive $a$ and $b$ from $r$ and $s$:
+\begin{align*}
+   a&=(r-ak_1)\mod p\\ 
+   b&=(r-s)(k_2-k_1)^{-1}\mod p
+\end{align*}
+Since there are $p(p-1)$ possible pairs $(r,s)$ with $r\neq s$, we can see that there is a one-to-one correspondence between the pairs $(a,b)$ and $(r,s)$.
+
+Therefore, all this implies that the probability of $k_1=k_2$ is equal to the probability that $r\equiv s\mod m$ with $r,s$ randomly chosen distinct values modulo $p$:
+$$ Pr[k_1=k_2] = Pr[r\equiv s\mod m]$$
+For a given $r$ we have $p-1$ values to choose $s$ and the number of values such that $s\equiv r\mod m$ is $\frac{p-1}{m}$. 
+% This means that the probability that $r$ and $s$ collide is $(\frac{1}{p-1})(\frac{p-1}{m}) = \frac{1}{m}$.
+% Given a pair of distinct values $k_1$ and $k_2$, we finally get that $$ Pr[h(k_1)=h(k_2)] = \frac{1}{m} $$
+This means that, given $|\mathcal{H}|=p(p-1)$, the number of bad hash functions (i.e. the ones that give collisions), is $p\frac{p-1}{m}=\frac{|\mathcal{H}|}{m}$ and therefore $$ Pr\left[\ \{h\in \mathcal{H}\ |\ h(k_1)=h(k_2)\}\ \right] = \frac{\textrm{\# bad choices}}{\textrm{\# all choices}} = \frac{\frac{|H|}{m}}{|H|} = \frac{1}{m} $$
+So, we have proven that $\mathcal{H}$ is a Universal Hash Family.
+
+\end{document}

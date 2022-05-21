@@ -1,0 +1,77 @@
+\documentclass{article}
+
+\usepackage[english]{babel}
+
+% Set page size and margins
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{\LARGE{\textbf{Algorithm Design 21/22}}\\ \vspace{1cm} Hands On 10 - Mixed Strategy}
+\author{Federico Ramacciotti}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Problem}
+\begin{enumerate}
+    \item Two players drive up to the same intersection at the same time. If both attempt to cross, the result is a fatal traffic accident. The game can be modeled by a payoff matrix where crossing successfully has a payoff of $1$, not crossing pays $0$, while an accident costs $-100$.
+    \begin{itemize}
+        \item Build the payoff matrix.
+        \item Find the Nash equilibria.
+        \item Find a mixed strategy Nash equilibrium; Compute the expected payoff for one player (the game is symmetric).
+    \end{itemize}
+    \item Find the mixed strategy and expected payoff for the Bach-Stravinsky game.
+    \item The Municipality of your city wants to implement an algorithm for the assignment of children to kindergartens that, on the one hand, takes into account the desiderata of families and, on the other hand, reduces city traffic caused by taking children to school. Every school has a maximum capacity limit that cannot be exceeded under any circumstances. As a form of welfare the Municipality has established the following two rules:
+    \begin{itemize}
+        \item in case of a child already attending a certain school, the sibling is granted the same school;
+        \item families with only one parent have priority for schools close to the workplace.
+    \end{itemize}
+    Model the situation as a stable matching problem and describe the payoff functions of the players. Question: what happens to twin siblings?
+\end{enumerate}
+
+\section{Solution}
+\subsection{Crossing game}
+\begin{center}
+\begin{tabular}{ccccc}
+                                                        &                                      & \multicolumn{3}{c}{\textbf{P1}}                                                                                              \\ \cline{3-5} 
+                                                        & \multicolumn{1}{c|}{}                & \multicolumn{1}{c|}{Cross}                   & \multicolumn{1}{c|}{Don't cross}     & \multicolumn{1}{c|}{\textit{Payoff}}         \\ \cline{2-5} 
+\multicolumn{1}{c|}{\multirow{3}{*}{\textbf{P2}}} & \multicolumn{1}{c|}{Cross}           & \multicolumn{1}{c|}{-100, -100}              & \multicolumn{1}{c|}{1, 0}            & \multicolumn{1}{c|}{$-100p+1(1-p) = 1-101p$} \\ \cline{2-5} 
+\multicolumn{1}{c|}{}                                   & \multicolumn{1}{c|}{Don't cross}     & \multicolumn{1}{c|}{0, 1}                    & \multicolumn{1}{c|}{0, 0}            & \multicolumn{1}{c|}{$0p+0(1-p) = 0$}         \\ \cline{2-5} 
+\multicolumn{1}{c|}{}                                   & \multicolumn{1}{c|}{\textit{Payoff}} & \multicolumn{1}{c|}{$-100q+1(1-q) = 1-101q$} & \multicolumn{1}{c|}{$0q+0(1-q) = 0$} & \multicolumn{1}{c|}{}                        \\ \cline{2-5} 
+\end{tabular}                 
+\end{center}
+Nash equilibria are 0,1 and 1,0.\\
+$1-101q=0 \implies q=\frac{1}{101}$\\
+$1-101p=0 \implies p=\frac{1}{101}$\\
+Each players crosses with probability $\frac{1}{101}$.\\
+The expected value for both players is  $1-101*\frac{1}{101}=0$.
+
+\subsection{Bach-Stravinsky game}
+\begin{center}
+\begin{tabular}{ccccc}
+                                                        &                                      & \multicolumn{3}{c}{\textbf{P1}}                                                                             \\ \cline{3-5} 
+                                                        & \multicolumn{1}{c|}{}                & \multicolumn{1}{c|}{Bach}           & \multicolumn{1}{c|}{Stravinsky}      & \multicolumn{1}{c|}{\textit{Payoff}} \\ \cline{2-5} 
+\multicolumn{1}{c|}{\multirow{3}{*}{\textbf{P2}}} & \multicolumn{1}{c|}{Bach}            & \multicolumn{1}{c|}{2, 2}           & \multicolumn{1}{c|}{0, 0}            & \multicolumn{1}{c|}{$2p+0(1-p)=2p$}  \\ \cline{2-5} 
+\multicolumn{1}{c|}{}                                   & \multicolumn{1}{c|}{Stravinsky}      & \multicolumn{1}{c|}{0, 0}           & \multicolumn{1}{c|}{1, 1}            & \multicolumn{1}{c|}{$0p+1(1-p)=1-p$} \\ \cline{2-5} 
+\multicolumn{1}{c|}{}                                   & \multicolumn{1}{c|}{\textit{Payoff}} & \multicolumn{1}{c|}{$2q+0(1-q)=2q$} & \multicolumn{1}{c|}{$0q+1(1-q)=1-q$} & \multicolumn{1}{c|}{}                \\ \cline{2-5} 
+\end{tabular}
+\end{center}
+The Nash equilibrium is $2,2$.
+Each player chooses Bach with probability $2q=0 \implies q=0$ and $2p=0 \implies p=0$.
+Each player chooses Stravinsky with probability $1-q=0 \implies q=1$ and $1-p=0 \implies p=1$.
+So, both players decide to go to Stravinsky.
+
+\subsection{Schools and children}
+We can start by duplicating the schools for their capacity; for example, if the school $S_a$ has a capacity of $x$, we duplicate it creating $x$ instances of $S_a$, each one with its payoff functions.
+
+The schools have preferences over the children, according to the two properties listed above.
+The families are not players, that are instead the children. They have preferences on the schools to go to and they choose them.
+Twin siblings are not considered as siblings that follow rule \#1, so they choose the school they want individually. It is not granted the spot in the same school if both choose the same one.
+
+\end{document}
