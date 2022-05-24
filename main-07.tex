@@ -30,22 +30,17 @@ Hints:
 \end{enumerate}
 
 \section{Solution}
-% If we choose a number of streams $n=\binom{|U|}{\frac{|U|}{2}+1}>f(k)$ (to use more than half of the alphabet and be sure that two streams have at least one element in common), per the pigeon principle we know that two different streams are mapped in the same state by any algorithm. Formally, with two streams $S_i=S_j$ and the algorithm $A$, then $A(S_i)=A(S_j) \implies A(S_i c)=A(S_j c)$, while the algorithm outputs a false result.
-% Suppose to have two streams $S_i=aabbcc$ and $S_j=ccddee$ and an algorithm $A$ represented as a deterministic finite state automata that for both streams outputs $A(aabbcc)=A(ccddee)=c$. Now the automata is in the same state for both streams. If we add a new symbol $e$ to both streams, the algorithm should output $A(aabbcce)=c$ and $A(ccddeee)=e$, while it doesn't. This is because, transitioning from the same state, the automata transitions to a new state, common for both streams since the new symbol is the same for both. So the algorithm either answers $c$ or $e$ for both, surely getting one of them wrong.
-
-% ---
-
 Given an algorithm $A$ and a function $Freq$ that exactly finds the most frequent item in a string, the goal is to find two streams $\tilde S_1,\tilde S_2\ s.t.\ Freq(\tilde S_1)=Freq(\tilde S_2) \land A(\tilde S_1)=A(\tilde S_2)$.
 
 Let's take the universe $U$ and its subsets $\Sigma_i\subseteq U\ s.t.\ |\Sigma_i|=\left\lceil \frac{|U|}{2} \right\rceil$. With $|\Sigma_i|=\frac{|U|}{2}+1$ the number of possible subsets is $$\binom{|U|}{\frac{|U|}{2}+1}\cong 2^{|U|}>f(k)$$
-Select from this subsets two subsets $\Sigma_i$ and $\Sigma_j$ such that $\ |\Sigma_i \cap \Sigma_j| \leq 1 \land |\Sigma_i \setminus \Sigma_j| \geq 1$. 
+Select from this subsets two subsets $\Sigma_i$ and $\Sigma_j$ such that $|\Sigma_i \cap \Sigma_j| \geq 1 \land |\Sigma_i \setminus \Sigma_j| \geq 1$, so that they have at least one character in common and at least one character different. 
 
 Define two streams $S$ such that $$\exists\ S_i\in\Sigma_i^*,\ S_j\in\Sigma_j^*\ s.t.\ S_i\neq S_j \land S_i\overset{A}{=}S_j$$ so that $S_i$ and $S_j$ are indistinguishable for the algorithm $A$.
 
-Given $$S_i=s_1^i s_2^i \ldots s_\frac{|U|}{2}^i$$ $$S_j=s_1^j s_2^j \ldots s_\frac{|U|}{2}^j$$ we choose two characters $x,y$ such that $x\in \Sigma_i,\ x\notin \Sigma_j$ and $y\notin \Sigma_i,\ y\in \Sigma_j$. 
-Thus, $A(S_i xy)=A(S_j xy)$ because $S_i\overset{A}{=}S_j$ and we can conclude that the algorithm fails, since $Freq(S_i xy)\neq Freq(S_j xy)$.
+Given the streams $$S_i=s_1^i s_2^i \ldots s_\frac{|U|}{2}^i$$ $$S_j=s_1^j s_2^j \ldots s_\frac{|U|}{2}^j$$ we choose two characters $x,y$ such that $x\in \Sigma_i,\ x\notin \Sigma_j$ and $y\notin \Sigma_i,\ y\in \Sigma_j$ and we concatenate them to the streams.
+Thus, $A(S_i xy)=A(S_j xy)$ because $S_i\overset{A}{=}S_j$ and, since $Freq(S_i xy)\neq Freq(S_j xy)$, we can conclude that the algorithm fails.
 
-We can also see the algorithm as a deterministic finite state automaton: since the transitions are unique, when the automaton is in the same state and receives the same character, it transition to another state. If $A$ is in a state and we give it the same characters, it transitions to the same state, giving the same response for both streams. If we build the streams as we have shown above, $A$ fails. 
+% We can also see the algorithm as a deterministic finite state automaton: since the transitions are unique, when the automaton is in the same state and receives the same character, it transition to another state. If $A$ is in a state and we give it the same characters, it transitions to the same state, giving the same response for both streams. If we build the streams as we have shown above, $A$ fails. 
 
-\textbf{Example}: consider $S_1=abx$ and $S_2=aby$. We have that $Freq(S_1)=A(S_1)=a$ and $Freq(S_2)=A(S_2)=a$. Now we modify the streams, creating $S_1'=abxxy$ and $S_2'=abyxy$, such that $Freq(S_1')=x$ and $Freq(S_2')=y$. For the algorithm $A$, $S_1$ and $S_2$ were indistinguishable, so if we add $xy$ to both streams, it outputs the same response for both. But their most frequent elements differs, so $A$ outputs $x$ for both or $y$ for both, picking either one of them wrong. $A$ fails!
+% \textbf{Example}: consider $S_1=abx$ and $S_2=aby$. We have that $Freq(S_1)=A(S_1)=a$ and $Freq(S_2)=A(S_2)=a$. Now we modify the streams, creating $S_1'=abxxy$ and $S_2'=abyxy$, such that $Freq(S_1')=x$ and $Freq(S_2')=y$. For the algorithm $A$, $S_1$ and $S_2$ were indistinguishable, so if we add $xy$ to both streams, it outputs the same response for both. But their most frequent elements differs, so $A$ outputs $x$ for both or $y$ for both, picking either one of them wrong. $A$ fails!
 \end{document}
