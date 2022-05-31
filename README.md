@@ -7,9 +7,9 @@ To-do list:
 - [X] #2
 - [X] #3
 - [X] #4
-- [ ] #5 (controllare (log m)/2)
+- [X] #5
 - [X] #6
 - [X] #7
-- [ ] #8 (manca markov analysis)
+- [ ] #8 (check markov)
 - [X] #9
-- [ ] #10 (manca .2)
+- [ ] #10 (question 2)

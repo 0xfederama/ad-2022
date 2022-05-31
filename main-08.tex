@@ -19,9 +19,9 @@
 \maketitle
 
 \section{Problem}
-Consider the counters $F[i]$ for $1 \leq i \leq n$, where $n$ is the number of items in the stream of any length. At any time, we know that $||F||$ is the total number of items (with repetitions) seen so far, where each $F[i]$ contains how many times item $i$ has been so far. We saw that CM-sketches provide a FPTAS $F'[i]$ such that $F[i] \leq F'[i] \leq F[i] + \varepsilon ||F||$, where the latter inequality holds with probability at least $1 - \delta$.
+Consider the counters $F[i]$ for $1 \leq i \leq n$, where $n$ is the number of items in the stream of any length. At any time, we know that $||F||$ is the total number of items (with repetitions) seen so far, where each $F[i]$ contains how many times item $i$ has been so far. We saw that CM-sketches provide an FPTAS $F'[i]$ such that $F[i] \leq F'[i] \leq F[i] + \varepsilon ||F||$, where the latter inequality holds with probability at least $1 - \delta$.
 
-Consider now a range query $(a,b)$, where we want $F_{ab} =\sum_{a \leq i \leq b} F[i]$. Show how to adapt CM-sketch so that a FPTAS $F'_{ab}$ is provided:
+Consider now a range query $(a,b)$, where we want $F_{ab} =\sum_{a \leq i \leq b} F[i]$. Show how to adapt CM-sketch so that an FPTAS $F'_{ab}$ is provided:
 \begin{itemize}
     \item Baseline is $\sum_{a \leq i \leq b} F'[i]$, but this has drawbacks as both time and error grows with $b-a+1$.
     \item Consider how to maintain counters for just the sums when $b-a+1$ is any power of $2$ (less or equal to $n$):
@@ -47,13 +47,30 @@ In this way the error is no more linear in $b-a+1$, as we walk only the tree in 
 This solution reduces the error because using only one Count-Min Sketch for the stream and the counters increases the error probability (more elements to map in the same space). We can also use less space by using only one sketch when we get to $\sqrt n$ counters, since it is useless for the space to use a new Count-Min Sketch when we have for example $2$ or $4$ counters.
 
 \subsubsection{Error bounding with Markov's inequality}
-$$Pr[X\geq V]<\frac{E[X]}{V}$$
+This analysis differs slightly from the solution given above, since we consider using only one Count-Min Sketch for the whole intervals, instead of one per level.
 
-$$V\ ?=\sum F[i]$$
-$$X\ ?=\sum F'[i]$$
+Let's define the set $D$ of dyadic ranges (pair of indices that define an interval), e.g. $[1,n],[1,n/2],[n/2+1,n],\ldots,[1,1],[2,2],\ldots,[n,n]$ with $|D|=2n$.
 
-Errore e' la somma degli intervalli che hanno una collisione con l'intervallo in questione
+With $D$, we have $$F'_{ab\in D}=F_{ab\in D}+\sum_{gh\in D,\ gh\neq ab}X_{gh}$$
 
-Ragionare su un unico CMS
+For notation purposes, we use $F_i$ or $F(i)$ or $F_{ab}$ to refer to $F$ on the intervals $i$ of $[a,b]$.
+
+Given an hash function $j$ in the Count-Min Sketch, define an indicator variable $$I_{jik}=\begin{cases} 1 & \text{if }h_j(i)=h_j(k)\\0 & \text{otherwise}\end{cases}$$ that states if there is a collision on the intervals $i\in D$ and $k\in D$. \footnote{Note that here the subscript $j$ refers to the hash function, not the interval: this is the only exception, since every other subscript $x\neq j$ refers to the interval $x$.}
+
+Now we can see that $$X_{ji,i\in D}=\sum_{k\in D,k\neq i}^{2n}I_{jik}F_k$$ and to find its expected value is
+\begin{align*}
+    E[X_{ji}]&=E\left[\sum_{k\in D, k\neq i}I_{jik}F_k\right]=\sum_{k\in D, k\neq i}E[I_{jik}F_k]=\\
+    &= \sum_{k\in D, k\neq i}Pr[I_{jik}=1]F_k=\sum_{k\in D, k\neq i}\frac{\varepsilon}{e}=\\
+    &= 2n\frac{\varepsilon}{e}\sum_{k\in D, k\neq i}\leq 2n\frac{\varepsilon}{e}||F||
+\end{align*}
+
+Finally, using Markov's inequality on $r$ hash functions we get 
+\begin{align*}
+    Pr\left[\forall j\in [r]:F'_{ab}\geq F_{ab}+2n\varepsilon ||F||\right]&=\prod_{j=0}^{r-1} Pr\left[F_{ab}+\sum X_{gh} \geq F_{ab}+2n\varepsilon ||F||\right]=\\
+    &=\prod_{j=0}^{r-1}Pr\left[\sum X_{gh} \geq 2n\varepsilon ||F||\right]\leq\\
+    &\leq \prod_{j=0}^{r-1}\frac{E[\sum X_{gh}]}{2n\varepsilon ||F||} \leq\\
+    &\leq \prod_{j=0}^{r-1}\frac{2n\frac{\varepsilon}{n} ||F||}{2n\varepsilon ||F||}=\\
+    &=\prod_{j=0}^{r-1}\frac{1}{e}=\left(\frac{1}{e}\right)^r\leq \delta
+\end{align*}
 
 \end{document}
