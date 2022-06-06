@@ -2,7 +2,7 @@
 ---
 
 #### Lez 1 - Randomness
-- [ ]  Chebyshev's Inequality
+- [ ]  /
 
 #### Lez 2 - hashing
 - [ ]  Case 2 insertion time, $Pr[\exists \textrm{ edge } ij]<\frac{1}{cm}$

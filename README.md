@@ -10,6 +10,6 @@ To-do list:
 - [X] #5
 - [X] #6
 - [X] #7
-- [ ] #8 (check markov)
+- [X] #8
 - [X] #9
 - [ ] #10 (question 2)
