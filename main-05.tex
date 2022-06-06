@@ -58,9 +58,9 @@ The baseline solution uses prefix sums in $O(m)$ time on the array $B$ to solve 
 The space used is $O(\log m)$ bits for each integer of the array and, with an array of length $m$, the total space is $O(m\log m)$.
 
 \subsubsection{Better solution: sampling}
-In order to reduce the space used by the algorithm, we can simply sample the prefix sums array created in the baseline solution. Since the goal is to use linear space $O(m)$ with samples of size $O(\log m)$, we need just $$\textrm{\# samples}*\frac{\log m}{2}=m \implies \textrm{\# samples}=\frac{2m}{\log m}$$ samples. With this solution the query time is no longer linear, because we have to find the right sample in $O(1)$ and then check the interval between two samples in $O(\log m)$ time.
+In order to reduce the space used by the algorithm, we can simply sample the prefix sums array created in the baseline solution. Since the goal is to use linear space $O(m)$ with samples of size $O(\frac{\log m}{2})$, we need just $$\textrm{\# samples}*\frac{\log m}{2}=m \implies \textrm{\# samples}=\frac{2m}{\log m}$$ samples. With this solution the query time is no longer constant, because we have to find the right sample in $O(1)$ and then check the interval between two samples in $O(\frac{\log m}{2})$ time.
 
-We can improve this solution to have a linear cost per query by pre-computing a lookup table $T$ that stores the prefix sums for any possible integer of $\frac{\log m}{2}$ bits, written in binary. Thus, to get $rank(i)$, we sum the first smaller sample with the right entry in the lookup table $T$. With $m=64$ and samples of size $(\log 64)/2 = 3$, the lookup table $T$ is:
+We can improve this solution to have a constant time per query by pre-computing a lookup table $T$ that stores the prefix sums for any possible integer of $\frac{\log m}{2}$ bits, written in binary. Thus, to get $rank(i)$, we sum the first smaller sample with the right entry in the lookup table $T$. With $m=64$ and samples of size $(\log 64)/2 = 3$, the lookup table $T$ is:
 \[
     T=
     \begin{array}{ccc|ccc}
@@ -75,6 +75,5 @@ We can improve this solution to have a linear cost per query by pre-computing a 
     \end{array}
 \]
 
-Since a string of $\frac{\log m}{2}$ bits can represent up to $2^{\frac{\log m}{2}}=\sqrt m$ distinct integers, the lookup table $T$ takes $\log(\frac{\log m}{2})*\sqrt m$ bits. Finally, we get that this solution takes $m+2m+\log (\frac{\log m}{2})\sqrt m=O(m)$ bits, with $O(1)$ time per query.
-
+Since a string of $\frac{\log m}{2}$ bits can represent up to $2^{\frac{\log m}{2}}=\sqrt m$ distinct integers, the lookup table $T$ takes $\log(\frac{\log m}{2})*\sqrt m$ bits. Finally, we get that this solution takes $\sqrt{m}\frac{\log m}{2}\log(\frac{\log m}{2})=O(m)$ bits, with $O(1)$ time per query.
 \end{document}
